@@ -2,9 +2,9 @@
 
 ## Información del Estudiante
 
-- **Nombre:** [Tu nombre completo aquí]
-- **Carrera:** [Tu carrera]
-- **Fecha de inicio:** [Fecha]
+- **Nombre:** Jessica Viviana Jara Avila
+- **Carrera:** Ing Software
+- **Fecha de inicio:** 4 junio 2026
 
 ---
 
