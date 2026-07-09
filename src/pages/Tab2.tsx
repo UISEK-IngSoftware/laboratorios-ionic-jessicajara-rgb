@@ -1,18 +1,18 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonPage, IonTextarea, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonHeader, IonInput, IonPage, IonText, IonTextarea, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import './Tab2.css';
-import { useHistory } from 'react-router';
-import { RepositoryPayLoad } from '../interfaces/RepositoryPayload';
-import { create } from 'axios';
-import { createRepository } from '../services/GithubService';
+import { useHistory } from "react-router";
+import { RepositoryPayLoad } from "../interfaces/RepositoryPayload";
+import { createRepository } from "../services/GithubService";
 import React from 'react';
 
 const Tab2: React.FC = () => {
   const history = useHistory();
   const [loading, setLoading] = React.useState(false);
+  const [errorMsg, setErrorMsg] = React.useState("");
 
   const repoFormData: RepositoryPayLoad = {
     name: '',
-    description: ''
+    description: '',
   };
 
   const setFormName = (value: string) => {
@@ -24,23 +24,27 @@ const Tab2: React.FC = () => {
   };
 
   const saveRepository = () => {
-   if(repoFormData.name.trim() === '') {
-      alert('El nombre del repositorio es obligatorio.');
+    if (repoFormData.name.trim() === '') {
+      setErrorMsg('El nombre del repositorio es obligatorio');
       return;
     }
     setLoading(true);
     createRepository(repoFormData).then((newRepo) => {
       if (newRepo) {
-        alert('Repositorio creado exitosamente.');
+        setFormName('');
+        setFormDescription('');
         history.push('/tab1');
       }
-  })  .catch((error) => {
-      console.error('Error creating repository:', error);
-      alert('Hubo un error al crear el repositorio.');
+    }).catch((error) => {
+      setErrorMsg("Error creando el repositorio: " + error.message);
     }).finally(() => {
       setLoading(false);
     });
   }
+
+  useIonViewWillEnter(() => {
+    setErrorMsg("");
+  });
 
   return (
     <IonPage>
@@ -59,32 +63,34 @@ const Tab2: React.FC = () => {
         <div className="form-container">
 
           <IonInput
-              className="form-field"
-              label="Nombre del Repositorio"
-              labelPlacement="floating"
-              placeholder="Ingrese el nombre del repositorio"
-              value = {repoFormData.name}
-              onIonChange={(e) => setFormName(e.detail.value!)}
-            />
+            className="form-field"
+            label="Nombre del Repositorio"
+            labelPlacement="floating"
+            placeholder="Ingrese el nombre del repositorio"
+            value={repoFormData.name}
+            onIonChange={(e) => setFormName(e.detail.value!)}
+          />
 
-            <IonTextarea
-              className="form-field"
-              label="Descripción"
-              labelPlacement="floating"
-              placeholder="Ingrese la descripción del repositorio"
-              rows={6}
-              value = {repoFormData.description}
-              onIonChange={(e) => setFormDescription(e.detail.value!)}
-            />
+          <IonTextarea
+            className="form-field"
+            label="Descripción"
+            labelPlacement="floating"
+            placeholder="Ingrese la descripción del repositorio"
+            rows={6}
+            value={repoFormData.description}
+            onIonChange={(e) => setFormDescription(e.detail.value!)}
+          />
 
-            <IonButton
-              className="form-field"
-              expand="block"
-              fill="solid"
-              onClick={saveRepository}
-            >
-              Guardar
-            </IonButton>
+          {errorMsg !== "" && <IonText color="danger"> {errorMsg} </IonText>}
+
+          <IonButton
+            className="form-field"
+            expand="block"
+            fill="solid"
+            onClick={saveRepository}
+          >
+            Guardar
+          </IonButton>
         </div>
 
       </IonContent>
