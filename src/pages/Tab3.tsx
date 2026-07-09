@@ -1,8 +1,26 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import './Tab3.css';
+import { GithubUser } from '../interfaces/GithubUser';
+import React from 'react';
+import { getUserInfo } from '../services/GithubService';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Tab3: React.FC = () => {
+
+const [userInfo, setUserInfo] = React.useState<GithubUser | null>(null);
+const [loading, setLoading] = React.useState(false);
+
+const loadUserInfo = async () => {
+  setLoading(true);
+  const userData = await getUserInfo();
+  setUserInfo(userData);
+  setLoading(false);
+  }
+
+  useIonViewWillEnter(() => {
+    loadUserInfo();
+  });
+
   return (
     <IonPage>
       <IonHeader>
@@ -19,17 +37,17 @@ const Tab3: React.FC = () => {
 
         <div className="card-container">
           <IonCard className="card">
-            <img src="https://avatars.githubusercontent.com/u/12345678?v=4" alt="Avatar" className="acrd-avatar" />
+            <img src={userInfo?.avatar_url} alt={userInfo?.name}/>
           <IonCardHeader>
-            <IonCardTitle> Jessica Jara</IonCardTitle>
-            <IonCardSubtitle> jessicajara@uisek.edu.ec</IonCardSubtitle>
+            <IonCardTitle> {userInfo?.name}</IonCardTitle>
+            <IonCardSubtitle> {userInfo?.login}</IonCardSubtitle>
           </IonCardHeader>
           <IonCardContent>
-            <p> Desarrollador web con experiencia en frontend y backend.
-            Apasionado por la tecnologia y el código limpio.</p>
+            <p> {userInfo?.bio}</p>
           </IonCardContent>
           </IonCard>
         </div>
+        <LoadingSpinner isOpen={loading} />
       </IonContent>
     </IonPage>
   );
