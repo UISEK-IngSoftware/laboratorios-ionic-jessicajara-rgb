@@ -2,43 +2,33 @@ import { IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLab
 import "./RepoItem.css";
 import React from "react";
 import { pencilOutline, trashOutline } from "ionicons/icons";
+import { Repository } from "../interfaces/Repository";
 
-interface RepoProps {
-    name: string;
-    description: string;
-    language: string;
-    avatarUrl: string;
-}
+const RepoItem: React.FC<Repository> = (repository) => {
+  return (
+    <IonItemSliding>
+      <IonItem>
+        <IonThumbnail slot="start">
+          <img alt={repository.name} src={repository.owner.avatar_url} />
+        </IonThumbnail>
+        <IonLabel>
+          <h2>{repository.name}</h2>
+          <p>{repository.description}</p>
+          <p>Lenguaje: {repository.language}</p>
+        </IonLabel>
+      </IonItem>
 
-const RepoItem: React.FC<RepoProps> = ({ 
-    name, 
-    description, 
-    language, 
-    avatarUrl 
-}) => {
-    return (
-        <IonItemSliding>
-            <IonItem>
-              <IonThumbnail slot="start">
-                <img alt={name} src={avatarUrl} />
-              </IonThumbnail>
-              <IonLabel>
-                <h2>{name}</h2>
-                <p>{description}</p>
-                <p>Lenguaje: {language}</p>
-              </IonLabel>
-            </IonItem>
+      <IonItemOptions>
+        <IonItemOption>
+          <IonIcon icon={pencilOutline} slot="icon-only" />
+        </IonItemOption>
+        <IonItemOption color="danger">
+          <IonIcon icon={trashOutline} slot="icon-only" />
+        </IonItemOption>
+      </IonItemOptions>
+    </IonItemSliding>
+  );
+};
 
-            <IonItemOptions>
-              <IonItemOption>
-                <IonIcon icon={pencilOutline} slot="icon-only"/>
-              </IonItemOption>
-              <IonItemOption color="danger">
-                <IonIcon icon={trashOutline} slot="icon-only"/>
-              </IonItemOption>
-            </IonItemOptions>
-          </IonItemSliding>
-    );
-}
 
 export default RepoItem;
